@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.generation.blogpessoal.model.Postagem;
 import com.generation.blogpessoal.repository.PostagemRepository;
+import com.generation.blogpessoal.repository.TemaRepository;
 
 import jakarta.validation.Valid;
 
@@ -30,6 +32,9 @@ public class PostagemController {
 	
 	@Autowired // injeção de dependencias - instanciar a classe Repository
 	private PostagemRepository postagemRepository;
+	
+	@Autowired
+	private TemaRepository temaRepository;
 	
 	@GetMapping // defini o verbo http que atende o metodo
 	public ResponseEntity<List<Postagem>> getAll(){
@@ -52,21 +57,30 @@ public class PostagemController {
 	
 	//INSERT INTO tb_postagem (titulo, texto data) VALUES ("Titulo", "Texto", "2024-12-31 14:05:01");
 	@PostMapping
-	public ResponseEntity<Postagem> post (@Valid @RequestBody Postagem postagem) {
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(postagemRepository.save(postagem));
+	public ResponseEntity<Postagem> post(@Valid @RequestBody Postagem postagem){
+		if (temaRepository.existsById(postagem.getTema().getId()))
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(postagemRepository.save(postagem));
+		
+		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tema não existe!", null);
+			
 	}
+	
 	//ATUALIZAR O POST CADASTRADO
 	@PutMapping
-	public ResponseEntity<Postagem> put(@Valid @RequestBody Postagem postagem) {
-		return postagemRepository.findById(postagem.getId())
-				.map(resposta-> ResponseEntity.status(HttpStatus.OK)
-				.body(postagemRepository.save(postagem)))
-				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+	public ResponseEntity<Postagem> put (@Valid @RequestBody Postagem postagem){
+			if (postagemRepository.existsById(postagem.getTema().getId()))
+		
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(postagemRepository.save(postagem));
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tema não existe!", null);
+					
 	}
+		
 	// DELETA POST CADASTRADO (DELETE FROM tb_postagens WHERE id=x;)
 	
 	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete (@PathVariable Long id) {
 		Optional<Postagem> postagem = postagemRepository.findById(id);
 		
