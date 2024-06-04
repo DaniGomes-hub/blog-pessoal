@@ -90,6 +90,16 @@ public class usuario {
 	public void setPostagem(List<Postagem> postagem) {
 		this.postagem = postagem;
 	}
+
+	public static boolean isPresent() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public static UsuarioLogin get() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
 	
