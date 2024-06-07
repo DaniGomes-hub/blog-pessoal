@@ -69,13 +69,7 @@ public class BasicSecurityConfig {
     
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    	//configurações de politicas da sessão incluindo politica de cors que foi definida nas controllers que deve ser respeitada
-    	/*
-    	 * um dos ajustes feitos aqui no Stateless é para garantir que as sessões do usuário não fiquem
-    	 * armazenadas
-    	 * em crf.disable estamos desabilitando a proteção da security contra ataques de CSRF(intercepção de dados de autenticação antes de chegar no servidor)
-    	 */
-    	http
+   	http
 	        .sessionManagement(management -> management
 	                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        		.csrf(csrf -> csrf.disable())
@@ -83,14 +77,13 @@ public class BasicSecurityConfig {
     	//************************atenção a esta parte *******************
     	/*
     	 * aqui vamos indicar quais as rotas vamos deixar abertas para acesso sem login/token
-    	 * estamos passando tbm o método http OPTIONS que permite o usuário do api
-    	 * ver quais opções são permitida ou obrigatórios para o cabeçalho da requisição
-    	 * em .anyRequest().authenticated()) estamos fechando o acesso de todos os endpoints não informados (precisa estar logado)
+    	 *  estamos fechando o acesso de todos os endpoints não informados (precisa estar logado)
     	 */
     	http
 	        .authorizeHttpRequests((auth) -> auth
 	                .requestMatchers("/usuarios/logar").permitAll()
 	                .requestMatchers("/usuarios/cadastrar").permitAll()
+	                .requestMatchers("/postagens").permitAll()
 	                .requestMatchers("/error/**").permitAll()
 	                .requestMatchers(HttpMethod.OPTIONS).permitAll()
 	                .anyRequest().authenticated())
