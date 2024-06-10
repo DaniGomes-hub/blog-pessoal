@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.generation.blogpessoal.model.usuario;
+import com.generation.blogpessoal.model.Usuario;
 
-public interface UsuarioRepository extends JpaRepository<usuario, Long> {
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
-	public Optional<usuario> findByUsuario(String usuario);
+	public Optional<Usuario> findByUsuario(String usuario);
 	
 }

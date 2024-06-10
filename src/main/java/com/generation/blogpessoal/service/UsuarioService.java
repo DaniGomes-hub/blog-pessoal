@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.generation.blogpessoal.model.UsuarioLogin;
-import com.generation.blogpessoal.model.usuario;
+import com.generation.blogpessoal.model.Usuario;
 import com.generation.blogpessoal.repository.UsuarioRepository;
 import com.generation.blogpessoal.security.JwtService;
 
@@ -27,18 +27,18 @@ public class UsuarioService {
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	/* autenticar o usuario
+	/* autenticar o Usuario
 	*classe do security que tem gestão de autenticação
 	*permite acessar metodos que podem entregar ao objeto as suas autoridade concedidas
 	*/
 	
-	public Optional<usuario> cadastrarUsuario(usuario usuario){
-		// nome | usuario (email) | senha | foto		
-		if(usuarioRepository.findByUsuario(usuario.getUsuario()).isPresent())
+	public Optional<Usuario> cadastrarUsuario(Usuario Usuario){
+		// nome | Usuario (email) | senha | foto		
+		if(usuarioRepository.findByUsuario(Usuario.getUsuario()).isPresent())
 			return Optional.empty(); // se o objeto estiver vazio 
 		
-		usuario.setSenha(criptografarSenha(usuario.getSenha()));
-		return Optional.of(usuarioRepository.save(usuario));
+		Usuario.setSenha(criptografarSenha(Usuario.getSenha()));
+		return Optional.of(usuarioRepository.save(Usuario));
 	}
 	
 	// vai tratar para a senha ser criptografada antes de ser persistida no banco 
@@ -51,17 +51,17 @@ public class UsuarioService {
 	
 	// segundo problema
 	
-	public Optional<usuario> atualizarUsuario (usuario usuario) {
-		if(usuarioRepository.findById(usuario.getId()).isPresent()){
+	public Optional<Usuario> atualizarUsuario (Usuario Usuario) {
+		if(usuarioRepository.findById(Usuario.getId()).isPresent()){
 			
-			Optional<usuario> buscaUsuario = usuarioRepository.findByUsuario(usuario.getUsuario());
+			Optional<Usuario> buscaUsuario = usuarioRepository.findByUsuario(Usuario.getUsuario());
 			
-			if(buscaUsuario.isPresent() && (buscaUsuario.get().getId()) != usuario.getId())
+			if(buscaUsuario.isPresent() && (buscaUsuario.get().getId()) != Usuario.getId())
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já existe", null);
 				
-			usuario.setSenha(criptografarSenha(usuario.getSenha()));	
+			Usuario.setSenha(criptografarSenha(Usuario.getSenha()));	
 
-			return Optional.ofNullable(usuarioRepository.save(usuario));
+			return Optional.ofNullable(usuarioRepository.save(Usuario));
 		}
 		return Optional.empty();
 	}
@@ -70,18 +70,18 @@ public class UsuarioService {
 		var credenciais = new UsernamePasswordAuthenticationToken(usuarioLogin.get().getUsuario(),
 			usuarioLogin.get().getSenha());	
 		
-		//tiver esse usuario e senha
+		//tiver esse Usuario e senha
 				Authentication authentication = authenticationManager.authenticate(credenciais);
 				
 		if(authentication.isAuthenticated()){
 					
-					Optional<usuario> usuario = usuarioRepository.findByUsuario(usuarioLogin.get().getUsuario());		
+					Optional<Usuario> Usuario = usuarioRepository.findByUsuario(usuarioLogin.get().getUsuario());		
 		
-		if (usuario.isPresent()) {
+		if (Usuario.isPresent()) {
 			
-			usuarioLogin.get().setId(usuario.get().getId());
-			usuarioLogin.get().setNome(usuario.get().getNome());
-			usuarioLogin.get().setFoto(usuario.get().getFoto());
+			usuarioLogin.get().setId(Usuario.get().getId());
+			usuarioLogin.get().setNome(Usuario.get().getNome());
+			usuarioLogin.get().setFoto(Usuario.get().getFoto());
 			usuarioLogin.get().setToken(gerarToken(usuarioLogin.get().getUsuario()));
 			usuarioLogin.get().setSenha("");
 			
@@ -92,11 +92,11 @@ public class UsuarioService {
 	return Optional.empty();
 }
 	/*
-	 * metodo que usa o jwt para gerar o token do usuario
+	 * metodo que usa o jwt para gerar o token do Usuario
 	 * 
 	 */
 	
 		private String gerarToken(String usuario) {
-			return "Bearer"+jwtService.generateToken(usuario);
+			return "Bearer "+jwtService.generateToken(usuario);
 		}
 }

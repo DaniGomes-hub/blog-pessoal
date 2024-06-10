@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.generation.blogpessoal.model.UsuarioLogin;
-import com.generation.blogpessoal.model.usuario;
+import com.generation.blogpessoal.model.Usuario;
 import com.generation.blogpessoal.repository.UsuarioRepository;
 import com.generation.blogpessoal.service.UsuarioService;
 
@@ -30,6 +30,7 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioService usuarioService;
 	
+	@Autowired
 	private final UsuarioRepository usuarioRepository;
 
     UsuarioController(UsuarioRepository usuarioRepository) {
@@ -37,25 +38,23 @@ public class UsuarioController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<usuario>> getAll(){
+    public ResponseEntity<List<Usuario>> getAll(){
     	return ResponseEntity.ok(usuarioRepository.findAll());
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<usuario> getById(@PathVariable Long id){
+    public ResponseEntity<Usuario> getById(@PathVariable Long id){
     	return usuarioRepository.findById(id)
     			.map(resposta-> ResponseEntity.ok(resposta))
     			.orElse(ResponseEntity.notFound().build());
-    	
     }
     
 	@PostMapping("/cadastrar")
-	public ResponseEntity<usuario> postUsuario(@RequestBody @Valid usuario usuario){
+	public ResponseEntity<Usuario> postUsuario(@RequestBody @Valid Usuario Usuario){
 		
-		return usuarioService.cadastrarUsuario(usuario)
+		return usuarioService.cadastrarUsuario(Usuario)
 				.map(resposta-> ResponseEntity.status(HttpStatus.CREATED).body(resposta))
-				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-			
+				.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 	}
 	
 	@PostMapping("/logar")
@@ -70,9 +69,9 @@ public class UsuarioController {
 	}
 	
 	@PutMapping("/atualizar")
-	public ResponseEntity<usuario> putUsuario(@Valid @RequestBody usuario usuario) {
-		return usuarioService.atualizarUsuario(usuario)
-				.map(resposta -> ResponseEntity.status(HttpStatus.OK).body(resposta))
+	public ResponseEntity<Usuario> putUsuario(@Valid @RequestBody Usuario Usuario) {
+		return usuarioService.atualizarUsuario(Usuario)
+				.map(resposta-> ResponseEntity.status(HttpStatus.OK).body(resposta))
 				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
 }

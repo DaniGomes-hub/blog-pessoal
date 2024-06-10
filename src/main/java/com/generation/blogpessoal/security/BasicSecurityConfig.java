@@ -45,7 +45,7 @@ public class BasicSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    //conseguiu validar usuario e senha valida no banco de dados essas informações
+    //conseguiu validar Usuario e senha valida no banco de dados essas informações
     @Bean
     AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();

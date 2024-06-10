@@ -26,14 +26,14 @@ public class JwtService {
 	}
 	
 	/*
-	 * claims - declarações usuario /declaração data que expira / declaração da assinatura
+	 * claims - declarações Usuario /declaração data que expira / declaração da assinatura
 	 * nesse caso assinatura
 	 * /*
 	 * esse método tem como objeto retornar todas as claims inseridas no Payload do token
 	 */
 	
 	private Claims extractAllClaims(String token) {
-		return Jwts.parserBuilder()
+		return Jwts.parserBuilder() 
 				.setSigningKey(getSingKey()).build()
 				.parseClaimsJws(token).getBody();
 	}
@@ -50,7 +50,7 @@ public class JwtService {
 	}
 	
 	/*
-	 * recuperar os dados da parte sub do claim onde encontramos o email(usuario)
+	 * recuperar os dados da parte sub do claim onde encontramos o email(Usuario)
 	 */
 
 	public String extractUsername(String token) {
@@ -74,7 +74,7 @@ public class JwtService {
 	}
 	
 	/*
-	 * validar se o usuario que foi extraido do token condiz com o usuario que a userDetails tem e se esta dentro da
+	 * validar se o Usuario que foi extraido do token condiz com o Usuario que a userDetails tem e se esta dentro da
 	 * data de validade ainda o token
 	 */
 

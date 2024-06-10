@@ -17,7 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.generation.blogpessoal.model.usuario;
+import com.generation.blogpessoal.model.Usuario;
 import com.generation.blogpessoal.repository.UsuarioRepository;
 import com.generation.blogpessoal.service.UsuarioService;
 
@@ -38,18 +38,18 @@ public class UsuarioControllerTest {
 	void start() {
 		usuarioRepository.deleteAll();
 		
-		usuarioService.cadastrarUsuario(new usuario(0L, 
+		usuarioService.cadastrarUsuario(new Usuario(0L, 
 				"Root", "root@root.com", "rootroot", " "));
 	}
 	
 	@Test
-	@DisplayName("Deve criar um novo usuario")
+	@DisplayName("Deve criar um novo Usuario")
 	public void deveCriarUmNovoUsuario () {
-		HttpEntity<usuario> corpoRequisicao = new HttpEntity<usuario>(
-				new usuario(0L, "Dani", "dani.gomes@gmail.com", "25262728", "")
+		HttpEntity<Usuario> corpoRequisicao = new HttpEntity<Usuario>(
+				new Usuario(0L, "Dani", "dani.gomes@gmail.com", "25262728", "")
 				);
-		ResponseEntity<usuario> corpoResposta = testRestTemplate.exchange("/usuarios/cadastrar", HttpMethod.POST, 
-				corpoRequisicao, usuario.class);
+		ResponseEntity<Usuario> corpoResposta = testRestTemplate.exchange("/usuarios/cadastrar", HttpMethod.POST, 
+				corpoRequisicao, Usuario.class);
 		
 		assertEquals(HttpStatus.CREATED, corpoResposta.getStatusCode());
 	}
@@ -58,14 +58,14 @@ public class UsuarioControllerTest {
 	@DisplayName("Não deve permitir duplicação do Usuário")
 	public void naoDeveDuplicarUsuario() {
 
-		usuarioService.cadastrarUsuario(new usuario(0L, 
+		usuarioService.cadastrarUsuario(new Usuario(0L, 
 			"Maria", "maria_gomes@email.com.br", "13465278", "-"));
 
-		HttpEntity<usuario> corpoRequisicao = new HttpEntity<usuario>(new usuario(0L, 
+		HttpEntity<Usuario> corpoRequisicao = new HttpEntity<Usuario>(new Usuario(0L, 
 			"Maria", "maria_gomes@email.com.br", "13465278", "-"));
 
-		ResponseEntity<usuario> corpoResposta = testRestTemplate
-			.exchange("/usuarios/cadastrar", HttpMethod.POST, corpoRequisicao, usuario.class);
+		ResponseEntity<Usuario> corpoResposta = testRestTemplate
+			.exchange("/usuarios/cadastrar", HttpMethod.POST, corpoRequisicao, Usuario.class);
 
 		assertEquals(HttpStatus.BAD_REQUEST, corpoResposta.getStatusCode());}
 	
@@ -73,17 +73,17 @@ public class UsuarioControllerTest {
 		@DisplayName("Atualizar um Usuário")
 		public void deveAtualizarUmUsuario() {
 			
-			Optional<usuario> usuarioCadastrado = usuarioService.cadastrarUsuario(new usuario(0L,
+			Optional<Usuario> usuarioCadastrado = usuarioService.cadastrarUsuario(new Usuario(0L,
 					"Cristina", "cristina.gomes@gmail.com", "20212223", "-"));
 			
-			usuario usuarioUpdate = new usuario(usuarioCadastrado.get().getId(), 
+			Usuario usuarioUpdate = new Usuario(usuarioCadastrado.get().getId(), 
 					"Cristina Gomes", "cristina.gomes@gmail.com", "20212223", "-");
 				
-				HttpEntity<usuario> corpoRequisicao = new HttpEntity<usuario>(usuarioUpdate);
+				HttpEntity<Usuario> corpoRequisicao = new HttpEntity<Usuario>(usuarioUpdate);
 
-				ResponseEntity<usuario> corpoResposta = testRestTemplate
+				ResponseEntity<Usuario> corpoResposta = testRestTemplate
 					.withBasicAuth("root@root.com", "rootroot")
-					.exchange("/usuarios/atualizar", HttpMethod.PUT, corpoRequisicao, usuario.class);
+					.exchange("/usuarios/atualizar", HttpMethod.PUT, corpoRequisicao, Usuario.class);
 
 				assertEquals(HttpStatus.OK, corpoResposta.getStatusCode());
 				
@@ -93,10 +93,10 @@ public class UsuarioControllerTest {
 		@DisplayName("Listar todos os Usuários")
 		public void deveMostrarTodosUsuarios() {
 
-			usuarioService.cadastrarUsuario(new usuario(0L, 
+			usuarioService.cadastrarUsuario(new Usuario(0L, 
 				"Sabrina Sanches", "sabrina_sanches@email.com.br", "sabrina123", "-"));
 			
-			usuarioService.cadastrarUsuario(new usuario(0L, 
+			usuarioService.cadastrarUsuario(new Usuario(0L, 
 				"Ricardo Marques", "ricardo_marques@email.com.br", "ricardo123", "-"));
 
 			ResponseEntity<String> resposta = testRestTemplate
